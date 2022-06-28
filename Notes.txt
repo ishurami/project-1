@@ -1,0 +1,30 @@
+======= PROCESS 1 =======
+INPUT
+Temperature
+Air Humidity
+
+OUTPUT
+Fan
+Lamp
+
+9 Conditions
+   Temp		Humi
+1. up		up
+2. up		stable
+3. up		down
+4. stable	up
+5. stable	stable
+6. stable	down
+7. down		up
+8. down		stable
+9. down		down
+
+
+======= PROCESS 2 =======
+INPUT
+4 Soil Humidity
+RTC
+
+OUTPUT
+Watering
+
