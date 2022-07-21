@@ -37,13 +37,13 @@ void loop() {
   Serial.print(humi1);
   Serial.print(F("%  Temp1: "));
   Serial.print(temp1);
-  Serial.print(F("°C "));
+  Serial.print(F("°C"));
 
   Serial.print(F(" | Humi2: "));
   Serial.print(humi2);
   Serial.print(F("%  Temp2: "));
   Serial.print(temp2);
-  Serial.print(F("°C "));
+  Serial.print(F("°C"));
   
   Serial.println();
 
