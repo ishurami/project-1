@@ -39,7 +39,7 @@ void setup () {
 }
 
 void loop () {
-//    DateTime now = rtc.now();
+    DateTime now = rtc.now();
 //
 //    if (now.hour() == resetTime[0] && now.minute() == resetTime[1]) {
 //      isWatered[0] = false;
@@ -56,22 +56,22 @@ void loop () {
 //        isWatered[1] = true;
 //    }
 //    
-//    Serial.print(now.year(), DEC);
-//    Serial.print('/');
-//    Serial.print(now.month(), DEC);
-//    Serial.print('/');
-//    Serial.print(now.day(), DEC);
-//    Serial.print(" - ");
-//    Serial.print(now.hour(), DEC);
-//    Serial.print(':');
-//    Serial.print(now.minute(), DEC);
-//    Serial.print(':');
-//    Serial.print(now.second(), DEC);
+    Serial.print(now.year(), DEC);
+    Serial.print('/');
+    Serial.print(now.month(), DEC);
+    Serial.print('/');
+    Serial.print(now.day(), DEC);
+    Serial.print(" - ");
+    Serial.print(now.hour(), DEC);
+    Serial.print(':');
+    Serial.print(now.minute(), DEC);
+    Serial.print(':');
+    Serial.print(now.second(), DEC);
 //    Serial.print(" - ");
 //    Serial.print(isWatered[0]);
-    Serial.print(" - ");
+//    Serial.print(" - ");
 //    Serial.print(isWatered[1]);
-//    Serial.println();
+    Serial.println();
 //
 //    Serial.println();
     delay(1000);
