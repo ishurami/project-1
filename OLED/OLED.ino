@@ -36,29 +36,16 @@ void setup() {
   display.setTextColor(WHITE);
   display.setCursor(0, 0);
   
-  // Display static text
-//  display.println("Scrolling Hello");
-//  display.display(); 
+//  Display static text
+  display.println("Scrolling Hello");
+  display.display(); 
 
-  oledDisplayCenter("Hello World! Hello");
+//  Display text in center
+//  oledDisplayCenter("Hello World!");
   
   delay(100);
- 
 }
 
 void loop() {
-  display.startscrollright(0x00, 0x0F);
-//  delay(2000);
-//  display.stopscroll();
-//  delay(1000);
-//  display.startscrollleft(0x00, 0x0F);
-//  delay(2000);
-//  display.stopscroll();
-//  delay(1000);
-//  display.startscrolldiagright(0x00, 0x07);
-//  delay(2000);
-//  display.startscrolldiagleft(0x00, 0x07);
-//  delay(2000);
-//  display.stopscroll();
   delay(1000);
 }
