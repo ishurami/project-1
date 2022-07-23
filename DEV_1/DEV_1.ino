@@ -31,7 +31,6 @@ const int MOTOR2_PIN = 18;
 const int LAMP_PIN = 19;
 const int FAN_PIN = 23;
 
-
 // Setpoint
 int maxSoilMoisture = 2000;
 
@@ -105,13 +104,17 @@ void loop () {
   current_time = millis();
   DateTime now = rtc.now();
 
+//  Soil Moisture
+  int soil1 = getSoilMoistureVal(SOIL1_PIN);  // send to ThingSpeak
+  int soil2 = getSoilMoistureVal(SOIL2_PIN);  // send to ThingSpeak
+
 //  DHT
   float humi1 = dht1.readHumidity();
   float temp1 = dht1.readTemperature();
   float humi2 = dht2.readHumidity();
   float temp2 = dht2.readTemperature();
-  float humiAverage = (humi1 + humi2) / 2;
-  float tempAverage = (temp1 + temp2) / 2;
+  float humiAverage = (humi1 + humi2) / 2;  // send to ThingSpeak
+  float tempAverage = (temp1 + temp2) / 2;  // send to ThingSpeak
   
   if (isnan(humi1) || isnan(temp1)) {
     display.clearDisplay();
@@ -132,10 +135,6 @@ void loop () {
     Serial.println(F("Failed to read from DHT2 sensor!"));
     return;
   }
-
-//  Soil Moisture
-  int soil1 = getSoilMoistureVal(SOIL1_PIN);
-  int soil2 = getSoilMoistureVal(SOIL2_PIN);
   
 //  OLED
   display.clearDisplay();

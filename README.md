@@ -3,9 +3,10 @@
 ESP32 Dev Module
 ```
 
-## Board Manager URL
-```
-```
+## Library Dependecies
+- Adafruit GFX Library by Adafruit
+- Adafruit SSD1306 by Adafruit
+
 
 ## Pin
 ### Soil Moisture No.1
@@ -60,5 +61,5 @@ ESP32 Dev Module
 | IN1       | GPIO 5 / D5           |
 | IN2       | GPIO 18 / D18         |
 | IN3       | GPIO 19 / D19         |
-| IN4       | -                     |
+| IN4       | GPIO 23 / D23         |
 | VCC       | 5V                    |
