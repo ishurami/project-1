@@ -4,8 +4,8 @@ ESP32 Dev Module
 ```
 
 ## Library Dependecies
-- Adafruit GFX Library by Adafruit
-- Adafruit SSD1306 by Adafruit
+- **Adafruit GFX Library** by **Adafruit**
+- **Adafruit SSD1306** by **Adafruit**
 
 
 ## Pin
