@@ -29,7 +29,7 @@ const int SOIL2_PIN = 35;
 const int MOTOR1_PIN = 5;
 const int MOTOR2_PIN = 18;
 const int LAMP_PIN = 19;
-//const int FAN_PIN = ;
+const int FAN_PIN = 23;
 
 
 // Setpoint
@@ -40,6 +40,9 @@ unsigned long current_time = 0;
 unsigned long prev_motor1_on = 0;
 unsigned long prev_motor2_on = 0;
 int onMotorTime = 500;
+int buf[100];
+int temp;
+int avgValue;
 
 void oledDisplayCenter(String text) {
   int16_t x1, y1;
@@ -61,8 +64,12 @@ void setup () {
 
   pinMode(MOTOR1_PIN, OUTPUT);
   pinMode(MOTOR2_PIN, OUTPUT);
+  pinMode(LAMP_PIN, OUTPUT);
+  pinMode(FAN_PIN, OUTPUT);
   digitalWrite(MOTOR1_PIN, HIGH);
   digitalWrite(MOTOR2_PIN, HIGH);
+  digitalWrite(LAMP_PIN, HIGH);
+  digitalWrite(FAN_PIN, HIGH);
 
   if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) { // Address 0x3D for 128x64
     Serial.println(F("SSD1306 allocation failed"));
@@ -105,33 +112,43 @@ void loop () {
   float temp2 = dht2.readTemperature();
   float humiAverage = (humi1 + humi2) / 2;
   float tempAverage = (temp1 + temp2) / 2;
-//  
-//  if (isnan(humi1) || isnan(temp1)) {
-//    Serial.println(F("Failed to read from DHT1 sensor!"));
-//    return;
-//  }
-//
-//  if (isnan(humi2) || isnan(temp2)) {
-//    Serial.println(F("Failed to read from DHT2 sensor!"));
-//    return;
-//  }
+  
+  if (isnan(humi1) || isnan(temp1)) {
+    display.clearDisplay();
+    display.setTextSize(1);
+    display.setCursor(0,0);
+    display.setTextColor(SSD1306_WHITE);
+    oledDisplayCenter("DHT #1 disconnected!");
+    Serial.println(F("Failed to read from DHT1 sensor!"));
+    return;
+  }
+
+  if (isnan(humi2) || isnan(temp2)) {
+    display.clearDisplay();
+    display.setTextSize(1);
+    display.setCursor(0,0);
+    display.setTextColor(SSD1306_WHITE);
+    oledDisplayCenter("DHT #2 disconnected!");
+    Serial.println(F("Failed to read from DHT2 sensor!"));
+    return;
+  }
 
 //  Soil Moisture
-  int soil1 = analogRead(SOIL1_PIN);
-  int soil2 = analogRead(SOIL2_PIN);
+  int soil1 = getSoilMoistureVal(SOIL1_PIN);
+  int soil2 = getSoilMoistureVal(SOIL2_PIN);
   
 //  OLED
   display.clearDisplay();
-  display.setTextSize(1);             // Normal 1:1 pixel scale
+  display.setTextSize(1);
   display.setCursor(0,0);
-  display.setTextColor(SSD1306_WHITE);        // Draw white text
+  display.setTextColor(SSD1306_WHITE);
 //  Row 1
   text = String(now.year()) + "/" + String(now.month()) + "/" + String(now.day()) + " " + String(daysOfTheWeek[now.dayOfTheWeek()]);
   display.print(text);  
   display.println();
   display.println();
 //  Row 2
-  text = "H: " + String(humiAverage) + " %  T: " + String(tempAverage) + " C";
+  text = "H: " + String(humiAverage) + " % T: " + String(tempAverage) + " C";
   display.print(text);
   display.println();
   display.println();
@@ -144,8 +161,28 @@ void loop () {
   text = "Soil Moisture 2: " + String(soil2);
   display.print(text);
   display.display();
+
+//  Fan ON
+  if (28 < tempAverage) {
+    digitalWrite(FAN_PIN, LOW);
+  }
+
+//  Lamp ON
+  if (tempAverage < 26) {
+    digitalWrite(LAMP_PIN, LOW);
+  }
+
+//  Fan OFF
+  if (tempAverage < 27.5) {
+    digitalWrite(FAN_PIN, HIGH);
+  }
+
+//  Lamp OFF
+  if (26.5 < tempAverage) {
+    digitalWrite(LAMP_PIN, HIGH);
+  }
   
-//  Control Soil Moisture 1
+//  Control Soil Moisture Motor 1
   Serial.print(soil1);
   Serial.print(" (");
   Serial.print((current_time - prev_motor1_on));
@@ -157,7 +194,7 @@ void loop () {
     prev_motor1_on = millis();
   } 
 
-//  Control Soil Moisture 2
+//  Control Soil Moisture Motor 2
   Serial.print(" | ");
   Serial.print(soil2);
   Serial.print(" (");
@@ -171,5 +208,31 @@ void loop () {
   }
 
   Serial.println();
-  delay(500);
+  delay(100);
 }
+
+int getSoilMoistureVal(int pin) {
+  for (int i = 0; i < 100; i++) {
+    temp = analogRead(pin);
+    buf[i] = temp;
+  }
+
+  for (int i = 0; i < 100-1; i++) {
+    for (int j = i + 1; j < 100; j++) {
+      if (buf[i] > buf[j]) {
+        temp = buf[i];
+        buf[i] = buf[j];
+        buf[j] = temp;
+      }
+    }
+  }
+
+  for (int i = 0; i < 50; i++) {
+    avgValue += buf[i+24];
+  }
+
+  avgValue /= 50;
+
+  return avgValue;
+}
+
