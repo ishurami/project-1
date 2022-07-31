@@ -42,6 +42,8 @@ int onMotorTime = 500;
 int buf[100];
 int temp;
 int avgValue;
+bool morningWatering = false;
+bool eveningWatering = false;
 
 void oledDisplayCenter(String text) {
   int16_t x1, y1;
@@ -180,30 +182,38 @@ void loop () {
   if (26.5 < tempAverage) {
     digitalWrite(LAMP_PIN, HIGH);
   }
-  
+
+  if ((morningWatering && (now.hour() == 7)) || (eveningWatering && (now.hour == 17))) {
 //  Control Soil Moisture Motor 1
-  Serial.print(soil1);
-  Serial.print(" (");
-  Serial.print((current_time - prev_motor1_on));
-  Serial.print(")");
-  if (soil1 > maxSoilMoisture && (current_time - prev_motor1_on) >= 10000) {
-    digitalWrite(MOTOR1_PIN, LOW);
-    delay(onMotorTime);
-    digitalWrite(MOTOR1_PIN, HIGH);
-    prev_motor1_on = millis();
-  } 
+    Serial.print(soil1);
+    Serial.print(" (");
+    Serial.print((current_time - prev_motor1_on));
+    Serial.print(")");
+    if (soil1 > maxSoilMoisture && (current_time - prev_motor1_on) >= 10000) {
+      digitalWrite(MOTOR1_PIN, LOW);
+      delay(onMotorTime);
+      digitalWrite(MOTOR1_PIN, HIGH);
+      prev_motor1_on = millis();
+    } 
 
 //  Control Soil Moisture Motor 2
-  Serial.print(" | ");
-  Serial.print(soil2);
-  Serial.print(" (");
-  Serial.print((current_time - prev_motor2_on));
-  Serial.print(")");
-  if (soil2 > maxSoilMoisture && (current_time - prev_motor2_on) >= 10000) {
-    digitalWrite(MOTOR2_PIN, LOW);
-    delay(onMotorTime);
-    digitalWrite(MOTOR2_PIN, HIGH);
-    prev_motor2_on = millis();
+    Serial.print(" | ");
+    Serial.print(soil2);
+    Serial.print(" (");
+    Serial.print((current_time - prev_motor2_on));
+    Serial.print(")");
+    if (soil2 > maxSoilMoisture && (current_time - prev_motor2_on) >= 10000) {
+      digitalWrite(MOTOR2_PIN, LOW);
+      delay(onMotorTime);
+      digitalWrite(MOTOR2_PIN, HIGH);
+      prev_motor2_on = millis();
+    }
+
+    if (morningWatering) {
+      morningWatering = false; 
+    } else if (eveningWatering) {
+      eveningWatering = false;
+    }
   }
 
   Serial.println();
