@@ -183,6 +183,12 @@ void loop () {
     digitalWrite(LAMP_PIN, HIGH);
   }
 
+//  Daily reset watering
+  if (now.hour() == 0 && !morningWatering && !eveningWatering) {
+    morningWatering = true;
+    eveningWatering = true;
+  }
+
   if ((morningWatering && (now.hour() == 7)) || (eveningWatering && (now.hour == 17))) {
 //  Control Soil Moisture Motor 1
     Serial.print(soil1);
